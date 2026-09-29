@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management - Love Luxe By EA</title>
+    <link rel="stylesheet" href="inventory.css">
+</head>
+<body>
+
+<button class="mobile-menu-btn" onclick="toggleMobileSidebar()">☰</button>
+<div class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+
+<aside class="sidebar">
+    <div class="brand">
+        <h1>LOVE LUXE</h1>
+        <p>BY EA • EST. 2024</p>
+    </div>
+
+    <div class="menu-title">GENERAL</div>
+
+    <a href="#" class="nav">Dashboard</a>
+
+    <div class="menu-title">TEAM MODULES</div>
+
+    <a href="#" class="nav">New Order / POS <span>−</span></a>
+    <a href="#" class="nav">Appointments <span>−</span></a>
+    <a href="#" class="nav">Activity Logs <span>−</span></a>
+    <a href="#" class="nav">Product Management <span>−</span></a>
+
+    <a href="#" class="nav active">
+        Inventory &amp; Stock
+        <span>−</span>
+    </a>
+
+    <a href="#" class="nav">Sales Reports <span>−</span></a>
+</aside>
+
+<main class="main-content">
+
+    <header class="page-header">
+        <div>
+            <span class="eyebrow">TEAM MODULE</span>
+            <h1>Inventory Management</h1>
+            <p>Monitor current stock levels and automatic restocking.</p>
+        </div>
+
+        <button class="add-btn" onclick="openAddModal()">
+            <span>+</span>
+            Add Inventory Item
+        </button>
+    </header>
+
+    <section class="summary-grid">
+
+        <div class="summary-card">
+            <div class="summary-icon">▦</div>
+            <div>
+                <p>Total Products</p>
+                <h2 id="totalProducts">0</h2>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-icon">✓</div>
+            <div>
+                <p>In Stock</p>
+                <h2 id="inStock">0</h2>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-icon">!</div>
+            <div>
+                <p>Low Stock</p>
+                <h2 id="lowStock">0</h2>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-icon">×</div>
+            <div>
+                <p>Out of Stock</p>
+                <h2 id="outOfStock">0</h2>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="inventory-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Current Inventory</h2>
+                <p>Set and monitor the available quantity of each product.</p>
+            </div>
+
+            <div class="inventory-count" id="inventoryCount">
+                0 items
+            </div>
+        </div>
+
+        <div class="inventory-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Code</th>
+                        <th>Current Stock</th>
+                        <th>Threshold</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="inventoryBody">
+                    <tr class="empty-row">
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <div class="empty-icon">▦</div>
+                                <strong>No inventory items</strong>
+                                <span>Add an inventory item to begin monitoring stock.</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+
+    <section class="restock-section">
+
+        <div class="section-heading">
+            <div>
+                <h2>Restocking Status</h2>
+                <p>Restocking is automatically triggered when stock reaches its threshold.</p>
+            </div>
+
+            <div class="auto-label">
+                <span></span>
+                Automatic Restock
+            </div>
+        </div>
+
+        <div class="restock-list" id="restockList">
+
+            <div class="restock-empty" id="restockEmpty">
+                <div class="empty-icon">↻</div>
+                <strong>No restocking activity</strong>
+                <span>Automatic restocking records will appear here when an item reaches its threshold.</span>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<div class="modal-overlay" id="stockModal">
+    <div class="modal">
+
+        <div class="modal-header">
+            <div>
+                <span class="modal-label">INVENTORY</span>
+                <h2>Edit Stock</h2>
+            </div>
+
+            <button class="close-btn" onclick="closeStockModal()">×</button>
+        </div>
+
+        <div class="product-preview">
+            <div class="product-preview-icon">P</div>
+
+            <div>
+                <strong id="stockProductName">Product Name</strong>
+                <span id="stockProductCode">LL-000</span>
+            </div>
+        </div>
+
+        <form id="stockForm">
+
+            <input type="hidden" id="stockItemId">
+
+            <label for="stockQuantity">Current Quantity</label>
+            <input type="number" id="stockQuantity" min="0" step="1" required>
+
+            <label for="stockThreshold">Restock Threshold</label>
+            <input type="number" id="stockThreshold" min="0" step="1" required>
+
+            <div class="stock-info">
+                <span>Restock automatically when quantity reaches the threshold.</span>
+            </div>
+
+            <div class="modal-message" id="stockMessage"></div>
+
+            <div class="modal-actions">
+                <button type="button" class="cancel-btn" onclick="closeStockModal()">
+                    Cancel
+                </button>
+
+                <button type="submit" class="save-btn">
+                    Save Changes
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="modal-overlay" id="addModal">
+    <div class="modal">
+
+        <div class="modal-header">
+            <div>
+                <span class="modal-label">INVENTORY</span>
+                <h2>Add Inventory Item</h2>
+            </div>
+
+            <button class="close-btn" onclick="closeAddModal()">×</button>
+        </div>
+
+        <form id="addForm">
+
+            <label for="addCode">Product Code</label>
+            <input type="text" id="addCode" placeholder="e.g. LL-001" required>
+
+            <label for="addName">Product Name</label>
+            <input type="text" id="addName" placeholder="Enter product name" required>
+
+            <label for="addSupplier">Supplier</label>
+            <input type="text" id="addSupplier" placeholder="Enter supplier" required>
+
+            <div class="form-row">
+
+                <div>
+                    <label for="addQuantity">Current Quantity</label>
+                    <input type="number" id="addQuantity" min="0" value="0" required>
+                </div>
+
+                <div>
+                    <label for="addThreshold">Restock Threshold</label>
+                    <input type="number" id="addThreshold" min="0" value="5" required>
+                </div>
+
+            </div>
+
+            <div class="modal-message" id="addMessage"></div>
+
+            <div class="modal-actions">
+                <button type="button" class="cancel-btn" onclick="closeAddModal()">
+                    Cancel
+                </button>
+
+                <button type="submit" class="save-btn">
+                    Add Item
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<script src="inventory.js"></script>
+
+</body>
+</html>
